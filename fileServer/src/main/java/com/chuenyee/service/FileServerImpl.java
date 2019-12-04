@@ -1,11 +1,15 @@
 package com.chuenyee.service;
 
 import com.chuenyee.service.api.FileServer;
+import com.chuenyee.until.ConfigUtil;
 import org.bouncycastle.util.encoders.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.swing.*;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -19,23 +23,28 @@ public class FileServerImpl implements FileServer {
     Logger logger = LoggerFactory.getLogger(FileServerImpl.class);
 
     static String  osName = null;
-    static String  save_Dir = null;
+    static String  saveDir = null;
     static Calendar cal = Calendar.getInstance();
     static final int  YEAR = cal.get(Calendar.YEAR);   //年
     static final int  MONTH = cal.get(Calendar.MONTH); //月
     static final int  DATE = cal.get(Calendar.DATE);   //份
     static{
         /*
-          根据操作系统 初始化存储文件夹
+          配置文件读取 存储路径
+         */
+        saveDir =  ConfigUtil.getProperty("file.saveDir");
+
+        /*
+          根据操作系统 初始化存储路径
          */
         Properties properties = System.getProperties();
         osName= properties.getProperty("os.name");
-
+        if(saveDir == null)
         if(osName!=null) {
             if (osName.contains("windows") || osName.contains("Windows")) {
-                save_Dir = "c://tempUpload//"+YEAR;
+                saveDir = "c://tempUpload";
             } else if (osName.contains("Linux") || osName.contains("linux")) {
-                save_Dir = "/usr/local/tempUpload//"+YEAR;
+                saveDir = "/usr/local/tempUpload";
             } else {
                 throw new RuntimeException("该应用程序未能兼容此设备操作系统");
             }
@@ -44,7 +53,7 @@ public class FileServerImpl implements FileServer {
         }
     }
     public void setSave_path(String path){
-        save_Dir = path;
+        saveDir = path;
     }
 
     @Override
@@ -76,24 +85,38 @@ public class FileServerImpl implements FileServer {
         return uuid;
     }
 
-    public UUID upload(MultipartFile file, String format) {
+    public String upload(MultipartFile file, String format) {
 
         UUID uuid = UUID.randomUUID();
-        logger.info(save_Dir+"//"+uuid+"."+format);
+
+        createFile(uuid,format);
+        logger.info(saveDir+"//"+YEAR+"//"+uuid+"."+format);
         try {
             // 输出文件
-            File outfile = new File(save_Dir+"//"+uuid+"."+format);
+            File outfile = new File(saveDir+"//"+YEAR+"//"+uuid+"."+format);
             file.transferTo(outfile);
         }catch (Exception e){
             e.printStackTrace();
             return null;
         }
-        return uuid;
+        return YEAR+"//"+uuid+"."+format;
+    }
+
+    public BufferedImage getIMG(String fileId){
+        ImageIcon imgeIcon = new ImageIcon(saveDir+"//"+fileId);
+
+        BufferedImage img = new BufferedImage(imgeIcon.getIconWidth(),
+                imgeIcon.getIconHeight(), BufferedImage.TYPE_INT_ARGB);
+
+        Graphics g2 = img.getGraphics();
+        g2.drawImage(imgeIcon.getImage(), 0, 0, null);;
+
+       return img;
     }
 
     //创建临时文件
     private File createFile(UUID uuid,String format){
-        File target_file = new File(save_Dir+"//"+uuid+"."+format);
+        File target_file = new File(saveDir+"//"+YEAR+"//"+uuid+"."+format);
 
         //创建目录
         File parentFile = target_file.getParentFile();

@@ -9,7 +9,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
 import javax.xml.transform.Result;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -21,48 +26,13 @@ public class FileUploadController {
     private Logger logger = LoggerFactory.getLogger(FileUploadController.class);
 
     FileServer fileServer = new FileServerImpl();
+
     // 上传文件 str_base64
-    @RequestMapping(value = "FileUpload_strbase64.do",method = RequestMethod.POST)
-    public Map<String, Object> FileUpload_strbase64(@RequestParam Map<String,Object> request_map) {
+    @RequestMapping(value = "FileUpload_strbase64.do", method = RequestMethod.POST)
+    public Map<String, Object> FileUpload_strbase64(@RequestParam Map<String, Object> request_map) {
         logger.info("===============文件上传");
 
-        logger.debug("request_map:"+request_map);
-
-        /*
-        跳转页面
-         */
-     //   String view ;
-
-        /*
-         解包
-         */
-        String str_base64 = (String) request_map.get("str_bytefile");
-        logger.debug("str_base64:"+str_base64);
-
-        /*
-          调用服务 上传头像
-        */
-            UUID result = fileServer.upload(str_base64,"jpg");
-
-
-        /*
-         * 打包返回信息
-         */
-        Map<String, Object> response_map = new HashMap<String, Object>();
-        Map<String, Object> response_param = new HashMap<String, Object>();
-        response_param.put("result",result);
-        response_map.put("response_param", response_param);
-        response_map.put("view", "login");
-
-        return response_map;
-    }
-
-    // 上传文件
-    @RequestMapping(value = "FileUpload.do",method = RequestMethod.POST)
-    public UUID FileUpload(@RequestParam MultipartFile local_file) {
-        logger.info("===============文件上传");
-
-        logger.debug("request_map:"+local_file);
+        logger.debug("request_map:" + request_map);
 
         /*
         跳转页面
@@ -72,12 +42,48 @@ public class FileUploadController {
         /*
          解包
          */
-       /* request_map.get("str_bytefile");*/
+        String str_base64 = (String) request_map.get("str_bytefile");
+        logger.debug("str_base64:" + str_base64);
 
         /*
           调用服务 上传头像
         */
-        UUID  result = fileServer.upload(local_file,"jpg");
+        UUID result = fileServer.upload(str_base64, "jpg");
+
+
+        /*
+         * 打包返回信息
+         */
+        Map<String, Object> response_map = new HashMap<String, Object>();
+        Map<String, Object> response_param = new HashMap<String, Object>();
+        response_param.put("result", result);
+        response_map.put("response_param", response_param);
+        response_map.put("view", "login");
+
+        return response_map;
+    }
+
+    // 上传文件
+    @RequestMapping(value = "upload.do", method = RequestMethod.POST)
+    public String upload(@RequestParam MultipartFile local_file) {
+        logger.info("===============文件上传");
+
+        logger.debug("request_map:" + local_file);
+
+        /*
+        跳转页面
+         */
+        //   String view ;
+
+        /*
+         解包
+         */
+        /* request_map.get("str_bytefile");*/
+
+        /*
+          调用服务 上传头像
+        */
+        String result = fileServer.upload(local_file, "jpg");
 
 
         /*
@@ -90,6 +96,34 @@ public class FileUploadController {
         response_map.put("view", "login");*/
 
         return result;
+    }
+
+    //图片输出
+    @RequestMapping(value = "showPNG.do", method = RequestMethod.GET)
+    public void showPNG(String fileId, HttpServletResponse response) {
+        // 输出文件
+        response.setHeader("Pragma", "no-cache");
+        response.setHeader("Cache-Control", "no-cache");
+        response.setDateHeader("Expires", 0);
+        response.setContentType("image/jpeg");
+
+        BufferedImage img = fileServer.getIMG(fileId);
+
+        ServletOutputStream sos = null;
+        try {
+            sos = response.getOutputStream();
+            ImageIO.write(img, "png", sos);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }finally {
+            try {
+                sos.flush();
+                sos.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
 /*    public Result uploadtofastdfs(String filename, byte[] data) {
