@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.chuenyee.mapper.AppuserMapper">
+	<!-- 增 -->
+	<insert id="insert" parameterType="com.chuenyee.pojo.Appuser">
+	<!-- 	insert into t_appuser(username,
+		password) values(#{username}, #{password}) -->
+		call insertAppuser(#{username}, #{password})
+	</insert>
+
+	<!-- 删 -->
+	<delete id="deleteById" parameterType="String">
+		<!-- delete from t_appuser
+		where appuserid=#{appuserid} -->
+		call deleteAppuserById(#{appuserid})
+	</delete>
+
+	<!-- 改 -->
+	<update id="update" parameterType="com.chuenyee.pojo.Appuser">
+		<!-- update t_appuser set
+		username=#{username}, password=#{password} where
+		id=#{appuserid} -->
+		call updateAppuser(#{appuserid},#{username},#{password})
+	</update>
+	
+	<update id="saveheadPortrait" parameterType="com.chuenyee.pojo.Appuser">
+		<!-- update t_appuser set
+		username=#{username}, password=#{password} where
+		id=#{appuserid} -->
+		call saveheadPortrait(#{headportrait},#{username})
+	</update>
+
+	<!-- 查 -->
+	<select id="getheadPortrait" parameterType="String" resultType="String">
+		<!-- select * from t_appuser -->
+		call getheadPortrait(#{username})
+	</select>
+	
+	<select id="findById" parameterType="String" resultType="com.chuenyee.pojo.Appuser">
+		<!-- select *
+		from t_appuser where appuserid=#{appuserid} -->
+		call findAppuserById(#{appuserid})
+	</select>
+
+	<select id="findPasswordByUsername" parameterType="String"
+		resultType="String">
+		 call findPasswordByUsername(#{username})
+	</select>
+	
+	<select id="getGrade" parameterType="String"
+		resultType="String">
+		<!-- select grade from t_appuser where username=#{username} -->
+		call getGrade(#{username});
+	</select>
+	
+	<select id="getId" parameterType="String"
+		resultType="String">
+		select id from t_appuser where username=#{username} 
+	</select>
+
+	<select id="findByName" parameterType="String"
+		resultType="com.chuenyee.pojo.Appuser">
+		<!-- select * from t_appuser where username=#{username} limit 1 -->
+		call findAppuserByName(#{username})
+	</select>
+
+	<select id="findAll" resultType="com.chuenyee.pojo.Appuser">
+		<!-- select * from t_appuser -->
+		call findAppuserAll()
+	</select>
+	
+	
+</mapper>  
