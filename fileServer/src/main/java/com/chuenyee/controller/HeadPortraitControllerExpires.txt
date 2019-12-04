@@ -1,0 +1,64 @@
+package com.chuenyee.controller;
+
+import com.chuenyee.service.api.FastDFSServer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.HashMap;
+import java.util.Map;
+
+@RestController
+public class HeadPortraitControllerExpires {
+
+        @Autowired
+        private FastDFSServer fastDFSServer;
+
+        private Logger logger = LoggerFactory.getLogger(HeadPortraitControllerExpires.class);
+
+        @RequestMapping(value = "/uploadHeadPortrait.do")
+        public Map<String, Object> uploadHeadPortrait(@RequestParam Map<String, Object> request_map){
+        logger.info("================上传头像");
+        //获取请求信息
+        System.out.println("controller local_filename:"+request_map.get("local_filename"));
+        logger.debug("local_filename:"+request_map.get("local_filename"));
+
+                logger.info("================4");
+        String  local_filename = (String) request_map.get("local_filename");
+                logger.info("================5");
+        System.out.println("controller local_filename:"+local_filename);
+                logger.info("================6");
+        logger.info(local_filename);
+                logger.info("================7");
+
+        // 跳转页面
+        /* reView = "WEB-INF/page/index.jsp"; */
+        /*
+         * 指定跳转视图
+         */
+        String reView = "personalUserInformation.html";
+                logger.info("================8");
+        /*
+         * 调用登陆验证
+         */
+        String fileId =  fastDFSServer.upload(local_filename);
+                logger.info("================9");
+
+
+        /*
+         * 打包返回信息
+         */
+        Map<String, Object> response_map = new HashMap<String, Object>();
+        Map<String, Object> response_param = new HashMap<String, Object>();
+        response_param.put("fileId",fileId);
+        response_map.put("response_param", response_param);
+        response_map.put("view", reView);
+
+                logger.info("================10");
+        return response_map;
+
+        }
+}

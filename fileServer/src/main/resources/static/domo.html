@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>upload file domo</title>
+    <script src="jquery-1.11.1.js"></script>
+</head>
+<body>
+<form id="from_upload"     method="POST" enctype="multipart/form-data" action="http://111.230.210.85:9519/file/FileUpload.do">
+    <input id="file" name="local_file"  type="file" >
+  <!--  <button name="local_file"  onclick="upload()" >提交</button>-->
+    <input type="submit" value="submit">
+</form>
+</body>
+
+
+</html>
+
+<script>
+/*    function upload() {
+        alert("upload");
+        //var formData = new FormData(document.getElementById("from_upload"));
+        /!* 	var formData = new FormData($("#form_uploadHeadPortrait")); *!/
+        $
+            .ajax({
+                url :"localhost:9519/store/FileUpload.do",
+                type : 'post',
+                data : $("#from_upload").serialize(),
+                cache : false,
+                processData : false,
+                contentType : false,
+                success : function(reslut) {
+                    alert(reslut);
+                  // window.location.href=path+"headPortrait.html";
+                }
+            });
+    }*/
+</script>
