@@ -1,4 +1,4 @@
-package com.chuenyee.service;
+package com.chuenyee.tool;
 
 public class Verification {
 

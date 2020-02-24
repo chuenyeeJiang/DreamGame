@@ -8,20 +8,20 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.web.servlet.ModelAndView;
 
-import com.chuenyee.pojo.Appuser;
+import com.chuenyee.pojo.User;
 
 
-public interface AppuserService {
-	/* void insert(Appuser appuser) throws Exception; */
+public interface UserService {
+	/* void insert(User user) throws Exception; */
 
-	/* boolean deleteAppuser(int appuserid) throws Exception; */
+	/* boolean deleteUser(int userid) throws Exception; */
 
 	// 用戶信息修改
-	boolean updateAppuser(Appuser appuser) throws Exception;
+	boolean updateUser(User user) throws Exception;
 
 	ModelAndView tabQuery(HttpServletRequest request,HttpServletResponse response,Integer pn,String reView);
 	  
-	/* Appuser findAppuserById(int appuserid) throws Exception; */
+	/* User findUserById(int userid) throws Exception; */
 
 	// 登录
 	/* String login(String username) throws Exception; */
@@ -36,24 +36,25 @@ public interface AppuserService {
 			throws Exception;
 
 	// 验证用户是否存在,并获取用户
-	Appuser getUser(String username) throws Exception;
+	User getUser(String username) throws Exception;
 
 	
 	//判断是否已经登陆
 	boolean isLog(HttpServletRequest request,HttpServletResponse response) throws Exception;
 	
-	//获取用户权限
-	int getGrade(String username) throws Exception;
-	
+
 	// 用户列表
-	List<Appuser> getUsers() throws Exception;
+	List<User> getUsers() throws Exception;
 	
 	//redis获取用户名
-	public String getusernameByRedis(String accessToken)  throws Exception;
+	public String getUsernameByRedis(String accessToken)  throws Exception;
 	
 	//获取用户 头像
-	public String getheadPortrait(String username) throws Exception;
+	public String getHeadPortrait(String name) throws Exception;
 	
 	//存储用户 头像
-	public Boolean saveheadPortrait(Appuser appuser) throws Exception;
+	public Boolean saveHeadPortrait(User user) throws Exception;
+
+	//获取用户名Id
+	public String getIdByUsernmae(String username ) throws  Exception;
 }

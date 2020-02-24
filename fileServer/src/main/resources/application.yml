@@ -10,16 +10,21 @@ server:
 
 eureka:
   instance:
+    #hostname: 47.100.196.156
+    #hostname: 47.100.196.156
     hostname: localhost
     prefer-ip-address: true
     instance-id: ${spring.application.name}:${spring.application.instance_id:${server.port}}
+#    ip-address: 47.100.196.156
+#    non-secure-port: 9519
   client:
     serviceUrl:
+      #defaultZone: http://139.159.138.243:9000/eureka
       defaultZone: http://${eureka.instance.hostname}:9000/eureka
 
 logging:
   level:
-    com.chuenyee: info
+    com.chuenyee: Debug
 
 spring:
   application:

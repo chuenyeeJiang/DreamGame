@@ -4,6 +4,7 @@ package com.chuenyee.controller;
 import com.chuenyee.service.FastDFS;
 import com.chuenyee.service.FileServerImpl;
 import com.chuenyee.service.api.FileServer;
+import com.chuenyee.until.ConfigUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +18,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 import java.util.UUID;
 
 @CrossOrigin
@@ -26,13 +28,11 @@ public class FileUploadController {
     private Logger logger = LoggerFactory.getLogger(FileUploadController.class);
 
     FileServer fileServer = new FileServerImpl();
-
     // 上传文件 str_base64
-    @RequestMapping(value = "FileUpload_strbase64.do", method = RequestMethod.POST)
-    public Map<String, Object> FileUpload_strbase64(@RequestParam Map<String, Object> request_map) {
+    @RequestMapping(value = "uploadBase64.do", method = RequestMethod.POST)
+    public String FileUploadStrbase64(@RequestParam("strBase64") String strBase64) {
         logger.info("===============文件上传");
 
-        logger.debug("request_map:" + request_map);
 
         /*
         跳转页面
@@ -42,33 +42,36 @@ public class FileUploadController {
         /*
          解包
          */
-        String str_base64 = (String) request_map.get("str_bytefile");
-        logger.debug("str_base64:" + str_base64);
+       // String strBase64 = (String) requestMap.get("strBase64");
+        logger.debug("str_base64:" + strBase64);
 
         /*
           调用服务 上传头像
         */
-        UUID result = fileServer.upload(str_base64, "jpg");
+        String result = fileServer.upload(strBase64, ConfigUtil.getProperty("file.format"));
+
+        logger.debug("getresult:" + result);
 
 
         /*
          * 打包返回信息
          */
-        Map<String, Object> response_map = new HashMap<String, Object>();
-        Map<String, Object> response_param = new HashMap<String, Object>();
-        response_param.put("result", result);
-        response_map.put("response_param", response_param);
-        response_map.put("view", "login");
+//        Map<String, Object> response_map = new HashMap<String, Object>();
+//        Map<String, Object> response_param = new HashMap<String, Object>();
+//        response_param.put("result", result);
+//        response_map.put("response_param", response_param);
+//        response_map.put("view", "login");
 
-        return response_map;
+        return result;
     }
 
     // 上传文件
+    @CrossOrigin
     @RequestMapping(value = "upload.do", method = RequestMethod.POST)
-    public String upload(@RequestParam MultipartFile local_file) {
+    public String upload(@RequestParam MultipartFile localFile) {
         logger.info("===============文件上传");
 
-        logger.debug("request_map:" + local_file);
+        logger.debug("request_map:" + localFile);
 
         /*
         跳转页面
@@ -83,8 +86,7 @@ public class FileUploadController {
         /*
           调用服务 上传头像
         */
-        String result = fileServer.upload(local_file, "jpg");
-
+        String result = fileServer.upload(localFile, ConfigUtil.getProperty("file.format"));
 
         /*
          * 打包返回信息
@@ -99,6 +101,7 @@ public class FileUploadController {
     }
 
     //图片输出
+    @CrossOrigin
     @RequestMapping(value = "showPNG.do", method = RequestMethod.GET)
     public void showPNG(String fileId, HttpServletResponse response) {
         // 输出文件
@@ -112,7 +115,7 @@ public class FileUploadController {
         ServletOutputStream sos = null;
         try {
             sos = response.getOutputStream();
-            ImageIO.write(img, "png", sos);
+            ImageIO.write(img, "PNG", sos);
 
         } catch (IOException e) {
             e.printStackTrace();

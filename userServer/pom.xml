@@ -9,9 +9,10 @@
 	</parent>
 	<artifactId>userServer</artifactId>
 	<name>userServer</name>
-    <version>v0.01</version>
+    <version>v1.0</version>
 
 	<packaging>jar</packaging>
+
 
 	<dependencies>
 		<!-- eureka -->
@@ -31,6 +32,12 @@
             <artifactId>spring-boot-starter-actuator</artifactId>
             <version>1.5.3.RELEASE</version>
         </dependency>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-feign</artifactId>
+			<version>1.3.1.RELEASE</version>
+		</dependency>
+
 
 		<!-- 数据库 -->
 		<dependency>
@@ -70,13 +77,7 @@
 			<version>1.9.22</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-thymeleaf -->
-		<!--  模板引擎  -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-thymeleaf</artifactId>
-			<version>1.4.1.RELEASE</version>
-		</dependency>
-		
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
@@ -95,6 +96,33 @@
 		<!-- <dependency> <groupId>org.springframework.boot</groupId> <artifactId>spring-boot-starter-data-redis</artifactId> 
 			<version>1.4.1.RELEASE</version> </dependency> -->
 
+		<!--<dependency>-->
+			<!--<groupId>org.projectlombok</groupId>-->
+			<!--<artifactId>lombok</artifactId>-->
+		<!--</dependency>-->
+
+		<!-- JAXB API
+       JDK 9 以上必须引入 -->
+		<dependency>
+			<groupId>javax.xml.bind</groupId>
+			<artifactId>jaxb-api</artifactId>
+			<version>2.3.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.xml.bind</groupId>
+			<artifactId>jaxb-impl</artifactId>
+			<version>2.3.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.xml.bind</groupId>
+			<artifactId>jaxb-core</artifactId>
+			<version>2.3.0</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.activation</groupId>
+			<artifactId>activation</artifactId>
+			<version>1.1.1</version>
+		</dependency>
 	</dependencies>
 
 	<dependencyManagement>
@@ -118,12 +146,36 @@
 		</dependencies>
 	</dependencyManagement>
 
+	<!--<properties>-->
+		<!--<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>-->
+		<!--<maven.compiler.encoding>UTF-8</maven.compiler.encoding>-->
+		<!--<java.version>12</java.version>-->
+		<!--<maven.compiler.source>12</maven.compiler.source>-->
+		<!--<maven.compiler.target>12</maven.compiler.target>-->
+	<!--</properties>-->
+
 	<build>
 		<defaultGoal>compile</defaultGoal>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<fork>true</fork>
+					<addResources>true</addResources>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>8</source>
+					<target>8</target>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>

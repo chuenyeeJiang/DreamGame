@@ -1,15 +1,14 @@
 package com.chuenyee.service;
 
-import java.io.PrintWriter;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.chuenyee.tool.Verification;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,68 +16,67 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.chuenyee.controller.AppuserLoginController;
-import com.chuenyee.mapper.AppuserMapper;
-import com.chuenyee.pojo.Appuser;
-import com.chuenyee.service.api.AppuserService;
+import com.chuenyee.mapper.UserMapper;
+import com.chuenyee.pojo.User;
+import com.chuenyee.service.api.UserService;
 import com.chuenyee.service.api.Encryption;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 
 @Service
-public class AppuserServiceImpl implements AppuserService {
-	
+public class UserServiceImpl implements UserService {
 
-	Logger logger = LoggerFactory.getLogger(AppuserServiceImpl.class);
-	
+
+	Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
+
 	@Autowired
-	private AppuserMapper appuserMapper;
-	
+	private UserMapper userMapper;
+
 	// 加密接口
 	Encryption encryption = new JcParseMD5();;
-    // 分页信息 接口 
-	PageInfo appuser_pageInfo;
-	
+    // 分页信息 接口
+	PageInfo user_pageInfo;
+
 	// 验证
 	Verification verification = new  Verification();
-	
+
 	@Autowired
 	private RedisTemplate<String, Object> redisTemplate;
 	/*
-	 * public void insert(Appuser appuser) throws Exception { ApplicationContext
+	 * public void insert(User user) throws Exception { ApplicationContext
 	 * cfg = new ClassPathXmlApplicationContext("ApplicationContext.xml");
-	 * AppuserMapper appuserMapper=(AppuserMapper) cfg.getBean("appuserMapper");
+	 * UserMapper userMapper=(UserMapper) cfg.getBean("userMapper");
 	 * // TODO Auto-generated method stub
-	 * System.out.println("saveAppuser...run");
-	 * System.out.println("appuser��"+appuser);
-	 * System.out.println("appuserMapper��"+appuserMapper);
-	 * appuserMapper.insert(appuser); }
+	 * System.out.println("saveUser...run");
+	 * System.out.println("user��"+user);
+	 * System.out.println("userMapper��"+userMapper);
+	 * userMapper.insert(user); }
 	 */
 
 	/*
-	 * public boolean deleteAppuser(int appuserid) throws Exception { // TODO
-	 * Auto-generated method stub // return appuserMapper.delete(appuserid);
+	 * public boolean deleteUser(int userid) throws Exception { // TODO
+	 * Auto-generated method stub // return userMapper.delete(userid);
 	 * return false; }
 	 */
 
 	// 用戶信息修改
-	public boolean updateAppuser(Appuser appuser) throws Exception {
+	public boolean updateUser(User user) throws Exception {
 		// TODO Auto-generated method stub
-		// return appuserMapper.update(appuser);
+		// return userMapper.update(user);
 		return false;
 	}
 
 	/*
-	 * public Appuser findAppuserById(int appuserid) throws Exception { // TODO
-	 * Auto-generated method stub Appuser
-	 * appuser=appuserMapper.findById(appuserid); return appuser; }
+	 * public User findUserById(int userid) throws Exception { // TODO
+	 * Auto-generated method stub User
+	 * user=userMapper.findById(userid); return user; }
 	 */
 
 	// 登陆
 	/*
 	 * public String login(String username) throws Exception { // TODO
 	 * Auto-generated method stub String password =
-	 * appuserMapper.findPasswordByUsername(username); return password; }
+	 * userMapper.findPasswordByUsername(username); return password; }
 	 */
 
 	// 新-登陆Test
@@ -89,37 +87,37 @@ public class AppuserServiceImpl implements AppuserService {
 //		String loginView = "login.html";
 		logger.info("=====================登录检验!");
 		logger.debug("请求信息集合:"+request_map.keySet());
-		
+
 		//获取请求信息
 		String username = (String)request_map.get("username");
 		String password = (String)request_map.get("password");
-		
-		String validatecode = (String)request_map.get("validatecode");
-		
-	
-		
+
+		//String validatecode = (String)request_map.get("validatecode");
+		// 获取正确验证码
+		//String str_validatecode = (String) redisTemplate.opsForValue().get("Validatecode");
+
+
 		//用户名密码UTF-8转码
 				username = new String(username.getBytes("ISO-8859-1"), "UTF-8");
 				password = new String(password.getBytes("ISO-8859-1"), "UTF-8");
-		
-		// 获取正确验证码
-		String str_validatecode = (String) redisTemplate.opsForValue().get("Validatecode");
 
-		logger.debug("获取正确验证码：" + str_validatecode);
-		
+
+
+		//logger.debug("获取正确验证码：" + str_validatecode);
+
 		// 默认跳转至登录界面
 		mv.setViewName(requestView);
 		logger.debug("默认跳转至登录界面：" + requestView);
 
 
-	
+
 		// 验证用户密码是否为空
 		if(verification.isNull(username)){
 			mv.addObject("log_error", "用户名不能为空!");
 			logger.debug("用户名不能为空!");
 			return mv;
 		}
-		
+
 		if(verification.isNull(password)){
 			mv.addObject("log_error", "密码不能为空!");
 			logger.debug("密码不能为空!");
@@ -127,52 +125,52 @@ public class AppuserServiceImpl implements AppuserService {
 		}
 
 		// 验证
-		if(verification.isNull(validatecode)){
-			mv.addObject("log_error", "验证码不能为空!");
-			logger.debug("验证码不能为空!");
-			return mv;
-		}
-		
-		if(!verification.toLowerCase(str_validatecode, validatecode)){
-			mv.addObject("log_error", "验证码错误!");
-			logger.debug("验证码错误!");
-			return mv;
-		}
-		
+//		if(verification.isNull(validatecode)){
+//			mv.addObject("log_error", "验证码不能为空!");
+//			logger.debug("验证码不能为空!");
+//			return mv;
+//		}
+
+//		if(!verification.toLowerCase(str_validatecode, validatecode)){
+//			mv.addObject("log_error", "验证码错误!");
+//			logger.debug("验证码错误!");
+//			return mv;
+//		}
+
 			// 用MD5转化并核验密码
 			password = encryption.parseStrToMd5L32(password);
 
 			// 查询用户密码
-			String repassword = appuserMapper.findPasswordByUsername(username);
-			
+			String repassword = userMapper.findPasswordByUsername(username);
+
 			if (verification.isNull(repassword)) {
 				mv.addObject("log_error", "用户不存在!");
 				logger.debug("用户不存在!");
 				return mv;
 			}
-			
+
 			// 登陆验证
 			if (!verification.compare(repassword,password)) {
 				mv.addObject("log_error", "密码错误!");
 				logger.debug("密码错误!");
 			}
 
-			Appuser appuser = getUser(username);
-			int grade = appuser.getGrade();
-			
+			User user = getUser(username);
+			int grade = user.getGrade();
+
 			//SSO单点登录
-			String accessToken = username+System.currentTimeMillis();
-			redisTemplate.opsForValue().set(accessToken, appuser.getAppuserid());
-			
-		
-			
+			String accessToken = encryption.parseStrToMd5L32(username+System.currentTimeMillis());
+			redisTemplate.opsForValue().set(accessToken, user.getId());
+
+
+
 			mv.addObject("accessToken", accessToken);
 
 			mv.setViewName(reView);
-			
+
 			logger.debug("success!");
 			logger.info("登录成功!");
-		    /* String password = appuserMapper.findPasswordByUsername(username); */
+		    /* String password = userMapper.findPasswordByUsername(username); */
 		    return mv;
 	}
 
@@ -189,9 +187,9 @@ public class AppuserServiceImpl implements AppuserService {
 	}
 
 	/*
-	 * // 注册 public String regis(Appuser appuser) throws Exception { if
-	 * (appuserMapper.findPasswordByUsername(appuser.getUsername()) != null) {
-	 * return "用户名已存在"; } else { appuserMapper.insert(appuser); return "1"; } }
+	 * // 注册 public String regis(User user) throws Exception { if
+	 * (userMapper.findPasswordByUsername(user.getUsername()) != null) {
+	 * return "用户名已存在"; } else { userMapper.insert(user); return "1"; } }
 	 */
 	// 注册
 	public ModelAndView regis(Map<String, Object> request_map,String requestView,String reView)
@@ -200,21 +198,21 @@ public class AppuserServiceImpl implements AppuserService {
 				String regisUsername = (String)request_map.get("regisUsername");
 				String regisPassword = (String)request_map.get("regisPassword");
 //				String validatecode = (String)request_map.get("validatecode");
-				
+
 		ModelAndView mv = new ModelAndView();
 
 
 		/*
 		 * 封装注册用户信息
 		 */
-		Appuser appuser = new Appuser();
-		appuser.setUsername(regisUsername);
-
+		User user = new User();
+		user.setUsername(regisUsername);
+		logger.debug("加密前:"+regisPassword);
 		// MD5加密
 		regisPassword = encryption.parseStrToMd5L32(regisPassword);
-		System.out.println("md5:" + regisPassword);
+		logger.debug("加密后(md5):"+regisPassword);
 
-		appuser.setPassword(regisPassword);
+		user.setPassword(regisPassword);
 
 		// 验证码取值
 		String str_validatecode = (String) redisTemplate.opsForValue().get("Validatecode");
@@ -225,40 +223,40 @@ public class AppuserServiceImpl implements AppuserService {
 //			reslut = "验证码错误!";
 //			System.out.println(reslut);
 //		}
-		
+
 		// 注册验证
-	    if (!verification.isNull(appuserMapper.findPasswordByUsername(appuser.getUsername()))) {
+	    if (!verification.isNull(userMapper.findPasswordByUsername(user.getUsername()))) {
 			mv.addObject("regis_error", "用户已存在!");
 			mv.setViewName(requestView);
 			return mv;
-		} 
-	    
-			appuserMapper.insert(appuser);
+		}
+
+			userMapper.insert(user);
 			// 登陆
-			String accessToken = regisUsername+System.currentTimeMillis();
-			
+			String accessToken = encryption.parseStrToMd5L32(regisUsername+System.currentTimeMillis());
+
 			//获取用户id
-			Appuser reAppuser = getUser(regisUsername);
-					
-			redisTemplate.opsForValue().set(accessToken,reAppuser.getAppuserid());
-			
+			User reUser = getUser(regisUsername);
+
+			redisTemplate.opsForValue().set(accessToken,reUser.getId());
+
 			mv.addObject("accessToken", accessToken);
 			mv.setViewName(reView);
 			return mv;
-		
+
 	}
 
 	// 验证用户是否存在,并获取用户
-	public Appuser getUser(String username) throws Exception {
+	public User getUser(String username) throws Exception {
 		// TODO Auto-generated method stub
-		Appuser appuser = appuserMapper.findByName(username);
-		return appuser;
+		User user = userMapper.findByName(username);
+		return user;
 	}
 
 	// 用户列表
-	public List<Appuser> getUsers() throws Exception {
+	public List<User> getUsers() throws Exception {
 		// TODO Auto-generated method stub
-		return appuserMapper.findAll();
+		return userMapper.findAll();
 	}
 
 	// 分页查询
@@ -266,20 +264,20 @@ public class AppuserServiceImpl implements AppuserService {
 			HttpServletResponse response, Integer pn, String reView) {
 		// TODO Auto-generated method stub
 		ModelAndView mv = new ModelAndView(reView);
-		System.out.println("appuserMapper:"+appuserMapper);
+		System.out.println("userMapper:"+userMapper);
 		PageHelper.startPage(pn, 5);
-		List<Appuser> list = null;
+		List<User> list = null;
 		try {
 			list = getUsers();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		PageInfo appuser_pageInfo = new PageInfo(list, 5);
+		PageInfo user_pageInfo = new PageInfo(list, 5);
 		/* request.setAttribute("Customers", list); */
-		mv.addObject("appuser_pageInfo", appuser_pageInfo);
-		mv.addObject("page", "appuserSelect");
-		
+		mv.addObject("user_pageInfo", user_pageInfo);
+		mv.addObject("page", "userSelect");
+
 		return mv;
 	}
 
@@ -294,51 +292,50 @@ public class AppuserServiceImpl implements AppuserService {
 		return false;
 	}
 
-	//获取用户权限
-	public int getGrade(String username)  throws Exception{
-		// TODO Auto-generated method stub
-		int grade = -1;
-		System.out.println("appuserMapper:"+appuserMapper);
-	
-	    grade = appuserMapper.getGrade(username);
-		
-		return grade;
-	}
-	
+
+
 	//redis获取用户名
-	public String getusernameByRedis(String accessToken)  throws Exception{
+	public String getUsernameByRedis(String accessToken)  throws Exception{
 		// TODO Auto-generated method stub
-		
+
 		logger.info("====getusernameByRedis");
 		//令牌获取id
 		System.out.println("accessToken："+accessToken);
 		logger.debug("accessToken："+accessToken);
-		String appuserid = (String) redisTemplate.opsForValue().get(accessToken);
-		System.out.println("appuserid："+appuserid);
-		logger.debug("appuserid："+appuserid);
+		String userid = (String) redisTemplate.opsForValue().get(accessToken);
+		System.out.println("userid："+userid);
+		logger.debug("userid："+userid);
 		//id获取用户名
-		String username = appuserMapper.findById(appuserid).getUsername();
+		String username = userMapper.findById(userid).getUsername();
 		System.out.println("username：" + username);
 		logger.debug("username：" + username);
 		return username;
 	}
 
 	@Override
-	public String getheadPortrait(String username) throws Exception {
+	public String getHeadPortrait(String username) throws Exception {
 		// TODO Auto-generated method stub
-		return appuserMapper.getheadPortrait(username);
+		return userMapper.getHeadPortrait(username);
 	}
 
 	@Override
-	public Boolean saveheadPortrait(Appuser appuser) throws Exception {
+	public Boolean saveHeadPortrait(User user) throws Exception {
 		// TODO Auto-generated method stub
 		try{
-			appuserMapper.saveheadPortrait(appuser);
+			userMapper.saveHeadPortrait(user);
 			return true;
 		}catch (Exception e) {
 			// TODO: handle exception
 			return false;
 		}
-	
+	}
+
+	public String getIdByUsernmae(String usernmae){
+		try {
+			return userMapper.getId(usernmae);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return  null;
 	}
 }

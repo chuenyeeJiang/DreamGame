@@ -1,6 +1,6 @@
 server:
   port: 9517
-  context-path: /store
+  context-path: /user
 
 eureka:
   instance:
@@ -11,24 +11,25 @@ eureka:
     serviceUrl:
       defaultZone: http://${eureka.instance.hostname}:9000/eureka
 
+
+logging:
+  level:
+    com.chuenyee: debug
+
 validateQuery: SELECT 1
-spring: 
-  thymeleaf: 
-    mode: LEGACYHTML5
+spring:
   datasource:
     driver: com.mysql.cj.jdbc.Driver
     #mysql8:0     com.mysql.cj.jdbc.Driver  
     #mysql5.0     com.mysql.jdbc.Driver
-    url: jdbc:mysql:///mystorebase?userSSL=true&useUnicode=true&characterEncoding=UTF8&serverTimezone=GMT
+    url: jdbc:mysql://47.100.196.156/gpwdb?userSSL=false&useUnicode=true&characterEncoding=UTF8&serverTimezone=GMT
     #mysql5.0     jdbc:mysql://111.230.210.85:3306/mystorebase
     #mysql8:0  jdbc:mysql://111.230.210.85:3306/mystorebase?userSSL=false&useUnicode=true&characterEncoding=UTF8&serverTimezone=GMT
     #?useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT
     username: root
-    password: 123456
+    password: Jcy`916458927
   application:
-    name: store-userServer
-  resources:
-    static-locations: classpath:/static/
+    name: userServer
 
 
 

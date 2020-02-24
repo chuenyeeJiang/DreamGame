@@ -11,12 +11,12 @@
 		call insertAppuser(#{username}, #{password})
 	</insert>
 
-	<!-- 删 -->
-	<delete id="deleteById" parameterType="String">
-		<!-- delete from t_appuser
-		where appuserid=#{appuserid} -->
-		call deleteAppuserById(#{appuserid})
-	</delete>
+	<!-- 删 业务不允许删除，用状态表示-->
+	<!--<delete id="deleteById" parameterType="String">-->
+		<!--&lt;!&ndash; delete from t_appuser-->
+		<!--where appuserid=#{appuserid} &ndash;&gt;-->
+		<!--call deleteAppuserById(#{appuserid})-->
+	<!--</delete>-->
 
 	<!-- 改 -->
 	<update id="update" parameterType="com.chuenyee.pojo.Appuser">
@@ -27,9 +27,6 @@
 	</update>
 	
 	<update id="saveheadPortrait" parameterType="com.chuenyee.pojo.Appuser">
-		<!-- update t_appuser set
-		username=#{username}, password=#{password} where
-		id=#{appuserid} -->
 		call saveheadPortrait(#{headportrait},#{username})
 	</update>
 

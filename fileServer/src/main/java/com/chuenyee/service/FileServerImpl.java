@@ -30,11 +30,6 @@ public class FileServerImpl implements FileServer {
     static final int  DATE = cal.get(Calendar.DATE);   //份
     static{
         /*
-          配置文件读取 存储路径
-         */
-        saveDir =  ConfigUtil.getProperty("file.saveDir");
-
-        /*
           根据操作系统 初始化存储路径
          */
         Properties properties = System.getProperties();
@@ -51,15 +46,22 @@ public class FileServerImpl implements FileServer {
         }else{
             throw new RuntimeException("获取操作系统信息错误！");
         }
+
+          /*
+          配置文件读取 存储路径
+         */
+        saveDir =  ConfigUtil.getProperty("file.saveDir");
+
     }
     public void setSave_path(String path){
         saveDir = path;
     }
 
     @Override
-    public UUID upload(String string_file,String format) {
+    public String upload(String string_file,String format) {
         UUID uuid = UUID.randomUUID();
         File target_file =null;
+        OutputStream outputStream= null;
         try {
          /*
          创建临时文件
@@ -74,15 +76,21 @@ public class FileServerImpl implements FileServer {
         /*
          写出文件
          */
-        OutputStream outputStream = new FileOutputStream(target_file);
+         outputStream = new FileOutputStream(target_file);
         outputStream.write(decode);
-        outputStream.flush();
-        outputStream.close();
+
         }catch (Exception e){
             return null;
+        }finally {
+            try {
+                outputStream.flush();
+                outputStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         logger.debug("保存位置:"+target_file.getAbsolutePath());
-        return uuid;
+        return YEAR+"//"+uuid+"."+format;
     }
 
     public String upload(MultipartFile file, String format) {

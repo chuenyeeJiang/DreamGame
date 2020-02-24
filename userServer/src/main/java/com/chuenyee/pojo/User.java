@@ -1,10 +1,13 @@
 package com.chuenyee.pojo;
 
+
+
 import java.io.Serializable;
 import java.util.Date;
 
-public class Appuser implements Serializable{
-    private String appuserid;
+
+public class User implements Serializable{
+    private String id;
     private String username;
     private String password;
     private String realname;
@@ -14,20 +17,23 @@ public class Appuser implements Serializable{
     private int state;
     private String headportrait;
 
-    
+
 	public String getHeadportrait() {
 		return headportrait;
 	}
 	public void setHeadportrait(String headportrait) {
 		this.headportrait = headportrait;
 	}
-	public String getAppuserid() {
-		return appuserid;
-	}
-	public void setAppuserid(String appuserid) {
-		this.appuserid = appuserid;
-	}
-	public String getUsername() {
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getUsername() {
 		return username;
 	}
 	public void setUsername(String username) {
@@ -71,11 +77,11 @@ public class Appuser implements Serializable{
 	}
 	@Override
 	public String toString() {
-		return "Appuser [appuserid=" + appuserid + ", username=" + username
+		return "Appuser [appuserid=" + id + ", username=" + username
 				+ ", password=" + password + ", realname=" + realname
 				+ ", phone=" + phone + ", grade=" + grade + ", rectime="
 				+ rectime + ", state=" + state + "]";
 	}
-	
-    
+
+
 }
