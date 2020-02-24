@@ -4,7 +4,7 @@
 
 	<groupId>com.chuenyee</groupId>
 	<artifactId>DreamGame</artifactId>
-	<version>v0.0.1</version>
+	<version>v1.0</version>
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -33,7 +33,18 @@
 	</properties>
 
 
-
+	<distributionManagement>
+		<repository>
+			<id>nexus-releases</id>
+			<name>Nexus Release Repository</name>
+			<url>http://47.100.196.156:8081/repository/proxyNexusRepository/</url>
+		</repository>
+		<snapshotRepository>
+			<id>nexus-snapshots</id>
+			<name>Nexus Snapshot Repository</name>
+			<url>http://47.100.196.156:8081/repository/hostNexusRepository/</url>
+		</snapshotRepository>
+	</distributionManagement>
 
 	<dependencyManagement>
 		<dependencies>
@@ -88,6 +99,7 @@
 		<module>eureka</module>
         <module>userServer</module>
 		<module>fileServer</module>
+		<module>webServer</module>
     </modules>
 	<!-- <build> <plugins> <plugin> <groupId>org.apache.maven.plugins</groupId> 
 		<artifactId>maven-compiler-plugin</artifactId> <configuration> <source>1.6</source> 

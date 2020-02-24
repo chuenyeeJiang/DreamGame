@@ -9,13 +9,15 @@
         <module name="eureka" />
         <module name="fileServer" />
         <module name="userServer" />
+        <module name="webServer" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
+    <bytecodeTargetLevel target="12">
       <module name="DreamGame" target="1.6" />
-      <module name="eureka" target="1.6" />
+      <module name="eureka" target="8" />
       <module name="fileServer" target="8" />
-      <module name="userServer" target="1.6" />
+      <module name="userServer" target="8" />
+      <module name="webServer" target="8" />
     </bytecodeTargetLevel>
   </component>
 </project>
