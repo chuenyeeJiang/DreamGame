@@ -1,0 +1,17 @@
+package com.chuenyee.service.api;
+
+
+import com.chuenyee.service.DistributedHeadPortraitFallbackServer;
+import org.springframework.cloud.netflix.feign.FeignClient;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.Map;
+
+@FeignClient(name="store-FastDFSServer",fallback= DistributedHeadPortraitFallbackServer.class)
+public interface Distributed_HeadPortrait {
+	@RequestMapping(value="/store/uploadHeadPortrait.do",consumes=MediaType.APPLICATION_JSON_VALUE,method=RequestMethod.GET)
+	public Map<String, Object> upload(@RequestParam Map<String,Object> request_map) ;
+}

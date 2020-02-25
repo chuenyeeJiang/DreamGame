@@ -1,0 +1,106 @@
+server:
+  port: 9518
+  context-path: /web
+
+eureka:
+  instance:
+    hostname: localhost
+    prefer-ip-address: true
+    instance-id: ${spring.application.name}:${spring.application.instance_id:${server.port}}
+  client:
+    serviceUrl:
+      defaultZone: http://${eureka.instance.hostname}:9000/eureka
+      #defaultZone: http://139.159.138.243:9000/eureka
+
+      
+logging:
+  level:
+    com.chuenyee: debug
+
+validateQuery: SELECT 1
+spring: 
+  thymeleaf: 
+    mode: LEGACYHTML5
+  http:                   #Spring Boot1.4版本后配置更改为:
+    multipart:
+      maxFileSize: 10Mb
+      maxRequestSize: 100Mb
+
+      #Spring Boot2.0之后的版本配置修改为:
+      #spring.servlet.multipart.max-file-size = 10MB
+      #spring.servlet.multipart.max-request-size=100MB
+
+ # datasource:
+ #   driver: com.mysql.jdbc.Driver
+    #mysql8:0     com.mysql.cj.jdbc.Driver  
+    #mysql5.0     com.mysql.jdbc.Driver
+    #url: jdbc:mysql://47.100.196.156/mystorebase?userSSL=true&useUnicode=true&characterEncoding=UTF8&serverTimezone=GMT
+    #mysql5.0     jdbc:mysql://111.230.210.85:3306/mystorebase
+    #mysql8:0  jdbc:mysql://111.230.210.85:3306/mystorebase?userSSL=false&useUnicode=true&characterEncoding=UTF8&serverTimezone=GMT
+    #?useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT
+ #   username: root
+ #   password: 123456
+  application:
+    name: web
+#  resources:
+#   static-locations: classpath:/static/
+#hystrix:
+#  command:
+#    default:
+#      execution:
+#        isolation:
+#          thread:
+#            timeoutInMilliseconds: 5000
+
+#熔断不超时
+#hystrix:
+#  command:
+#    default:
+#      execution:
+#        timeout:
+#          enabled: false
+
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 6000
+        timeout:
+          enabled: false
+
+
+feign:
+  hystrix:
+    enabled: true
+
+#hystrix:
+#  command:
+#    ##全局方法使用default
+#    UserServer#loginCl():
+#      execution:
+#        isolation:
+#          thread: 
+#          ##超时时间
+#            timeoutInMilliseconds: 50000
+#     circuitBreaker:
+#      ##每秒3次请求
+#        requestVolumeThreshold: 3  
+        
+
+    
+redis: 
+  hostName: 127.0.0.1
+  port: 6379
+  maxIdle: 300
+  maxTotal: 1000
+  maxWaitMillis: 1000
+  minEvictableIdleTimeMillis: 300000
+  numTestsPerEvictionRun: 1024
+  timeBetweenEvictionRunsMillis: 30000
+  testOnBorrow: true
+  testWhileIdle: true    
+    
+
+
